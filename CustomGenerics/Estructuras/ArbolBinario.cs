@@ -142,12 +142,94 @@ namespace CustomGenerics.Estructuras
                 return busc.Valor;
             }
         }
+
+        private int GetAltura(Nodo<T> nodo)
+        {
+            if (nodo == null) return -1;
+            var IzquierdoH = GetAltura(nodo.Izquierdo);
+            var rightH = GetAltura(nodo.Derecho);
+            return Math.Max(IzquierdoH, rightH) + 1;
+        }
+
+        private int FactorEquilibrio(Nodo<T> nodoActual)
+        {
+            int iz = GetAltura(nodoActual.Izquierdo);
+            int der = GetAltura(nodoActual.Derecho);
+            int factorE = iz - der;
+            return factorE;
+        }
+
         public List<T> ObtenerLista()
         {
             listaOrdenada.Clear();
             InOrder(Raiz);
             return listaOrdenada;
         }
+
+        private Nodo<T> Balancear(Nodo<T> nodoActual)
+        {
+            int factorE = FactorEquilibrio(nodoActual);
+            if (factorE > 1)
+            {
+                if (FactorEquilibrio(nodoActual.Izquierdo) > 0)
+                {
+                    nodoActual = RotacionDer(nodoActual);
+                }
+                else
+                {
+                    //Rotacion Doble Derecha
+                }
+            }
+            else if (factorE < -1)
+            {
+                if (FactorEquilibrio(nodoActual.Derecho) > 0)
+                {
+                    //Rotacion Doble Izquierda
+                }
+                else
+                {
+                    nodoActual = RotacionIzq(nodoActual);
+                }
+            }
+            return nodoActual;
+        }
+
+        private Nodo<T> RotacionDer(Nodo<T> nodoActual)
+        {
+            var temp = new Nodo<T>
+            {
+                Valor = nodoActual.Izquierdo.Valor,
+                Izquierdo = nodoActual.Izquierdo.Izquierdo,
+                Derecho = nodoActual.Izquierdo.Derecho
+            };
+            nodoActual.Izquierdo = temp.Derecho;
+            temp.Derecho = nodoActual;
+
+            if (nodoActual.Valor.CompareTo(Raiz.Valor) == 0)
+            {
+                Raiz = temp;
+            }
+            return temp;
+        }
+
+        private Nodo<T> RotacionIzq(Nodo<T> nodoActual)
+        {
+            var temp = new Nodo<T>
+            {
+                Valor = nodoActual.Derecho.Valor,
+                Izquierdo = nodoActual.Derecho.Izquierdo,
+                Derecho = nodoActual.Derecho.Derecho
+            };
+            nodoActual.Derecho = temp.Izquierdo;
+            temp.Izquierdo = nodoActual;
+
+            if (nodoActual.Valor.CompareTo(Raiz.Valor) == 0)
+            {
+                Raiz = temp;
+            }
+            return temp;
+        }
+
         // Recorre la lista en orden y agrega los valores a la listaOrdenada
         private void InOrder(Nodo<T> nodo)
         {
