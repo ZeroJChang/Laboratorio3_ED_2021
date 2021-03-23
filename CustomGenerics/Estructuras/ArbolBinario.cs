@@ -240,5 +240,46 @@ namespace CustomGenerics.Estructuras
                 InOrder(nodo.Derecho);
             }
         }
+
+
+        public List<T> ObtenerListaPre()
+        {
+            listaOrdenada.Clear();
+            PreOrder(Raiz);
+            return listaOrdenada;
+        }
+
+
+        private void PreOrder(Nodo<T> nodo)
+        {
+            if (nodo.Valor != null)
+            {
+                listaOrdenada.Add(nodo.Valor);
+                PreOrder(nodo.Izquierdo);
+                PreOrder(nodo.Derecho);
+            }
+        }
+
+
+        public List<T> ObtenerListaPost()
+        {
+            listaOrdenada.Clear();
+            PostOrder(Raiz);
+            return listaOrdenada;
+        }
+
+        private void PostOrder(Nodo<T> nodo)
+        {
+            if (nodo.Valor != null)
+            {
+                PostOrder(nodo.Izquierdo);
+                PostOrder(nodo.Derecho);
+                listaOrdenada.Add(nodo.Valor);
+                
+                
+            }
+        }
+
+
     }
 }
