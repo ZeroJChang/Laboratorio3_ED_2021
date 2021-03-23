@@ -1,0 +1,71 @@
+﻿@using PagedList.Mvc;
+@model PagedList.IPagedList<Laboratorio2_ED1.Models.MedicamentoModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Medicamentos</h1>
+<p>Para que funcione cambiar AgregarArchivoController</p>
+<p>Cambiar la ruta (linea 28)</p>
+
+<p>EJEMPLO: </p>
+<p>"C:\Users\ZeroJChang\Desktop\Laboratorio2_ED1\MOCK_DATA.txt"</p>
+@using (Html.BeginForm())
+{
+    <div class="row">
+        <input type="text" class="form-control" name="search" value="" placeholder="buscar..." />
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().Nombre)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.ActionLink("Ordenar Medicamento", "Edit", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+<div>
+    Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)
+    of @Model.PageCount
+    @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))*@
+    @if (Model.HasPreviousPage)
+    {
+        @Html.ActionLink("<<", "Index", new { page = 1 })
+        @Html.Raw(" ");
+        @Html.ActionLink("< Prev", "Index", new { page = Model.PageNumber - 1 })
+    }
+    else
+    {
+        @:<<
+        @Html.Raw(" ");
+        @: < Prev
+    }
+    @if (Model.HasNextPage)
+    {
+        @Html.ActionLink("Next >", "Index", new { page = Model.PageNumber + 1 })
+        @Html.Raw(" ");
+        @Html.ActionLink(">>", "Index", new { page = Model.PageCount })
+    }
+    else
+    {
+        @:Next >
+        @Html.Raw(" ");
+        @: >>
+    }
+</div>
