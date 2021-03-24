@@ -29,10 +29,12 @@ namespace CustomGenerics.Estructuras
                 else if (value.CompareTo(nodo.Valor) == -1)
                 {
                     nodo.Izquierdo = Insert(nodo.Izquierdo, value);
+                    nodo = BalancearNodo(nodo);
                 }
                 else if (value.CompareTo(nodo.Valor) == 1)
                 {
                     nodo.Derecho = Insert(nodo.Derecho, value);
+                    nodo = BalancearNodo(nodo);
                 }
                 return nodo;
             }
@@ -75,6 +77,7 @@ namespace CustomGenerics.Estructuras
                 }
                 nodo.Valor = temp.Valor;
             }
+            BalancearNodoDelete(Raiz);
         }
         // Metodo ayuda para el caso 3 de eliminacion
         private Nodo<T> Derecha(Nodo<T> nodo)
@@ -134,7 +137,6 @@ namespace CustomGenerics.Estructuras
             busc = Get(Raiz, buscado);
             if (busc == null)
             {
-                // throw new System.InvalidOperationException("Valor no encontrado");
                 return temp.Valor;
             }
             else
@@ -143,6 +145,7 @@ namespace CustomGenerics.Estructuras
             }
         }
 
+        //Altura del nodo
         private int GetAltura(Nodo<T> nodo)
         {
             if (nodo == null) return -1;
@@ -166,7 +169,7 @@ namespace CustomGenerics.Estructuras
             return listaOrdenada;
         }
 
-        private Nodo<T> Balancear(Nodo<T> nodoActual)
+        private Nodo<T> BalancearNodo(Nodo<T> nodoActual)
         {
             int factorE = FactorEquilibrio(nodoActual);
             if (factorE > 1)
@@ -177,14 +180,14 @@ namespace CustomGenerics.Estructuras
                 }
                 else
                 {
-                    //Rotacion Doble Derecha
+                    nodoActual = RotacionDobleDer(nodoActual);
                 }
             }
             else if (factorE < -1)
             {
                 if (FactorEquilibrio(nodoActual.Derecho) > 0)
                 {
-                    //Rotacion Doble Izquierda
+                    nodoActual = RotacionDobleIzq(nodoActual);
                 }
                 else
                 {
@@ -192,6 +195,17 @@ namespace CustomGenerics.Estructuras
                 }
             }
             return nodoActual;
+        }
+
+        //Balanceo de la eliminacion
+        private void BalancearNodoDelete(Nodo<T> nodo)
+        {
+            if (nodo.Valor != null)
+            {
+                BalancearNodoDelete(nodo.Izquierdo);
+                BalancearNodoDelete(nodo.Derecho);
+                BalancearNodo(nodo);
+            }
         }
 
         private Nodo<T> RotacionDer(Nodo<T> nodoActual)
@@ -229,7 +243,29 @@ namespace CustomGenerics.Estructuras
             }
             return temp;
         }
-
+        //Rotaciones dobles
+        private Nodo<T> RotacionDobleDer(Nodo<T> nodoActual)
+        {
+            var temp = new Nodo<T>
+            {
+                Valor = nodoActual.Izquierdo.Valor,
+                Izquierdo = nodoActual.Izquierdo.Izquierdo,
+                Derecho = nodoActual.Izquierdo.Derecho
+            };
+            nodoActual.Izquierdo = RotacionIzq(temp);
+            return RotacionDer(nodoActual);
+        }
+        private Nodo<T> RotacionDobleIzq(Nodo<T> nodoActual)
+        {
+            var temp = new Nodo<T>
+            {
+                Valor = nodoActual.Derecho.Valor,
+                Izquierdo = nodoActual.Derecho.Izquierdo,
+                Derecho = nodoActual.Derecho.Derecho
+            };
+            nodoActual.Derecho = RotacionDer(temp);
+            return RotacionIzq(nodoActual);
+        }
         // Recorre la lista en orden y agrega los valores a la listaOrdenada
         private void InOrder(Nodo<T> nodo)
         {
